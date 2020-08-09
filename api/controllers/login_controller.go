@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/vonhattruong250695/golang-restapi/api/utils/formaterror"
 	"github.com/vonhattruong250695/golang-restapi/api/auth"
 	"github.com/vonhattruong250695/golang-restapi/api/models"
 	"github.com/vonhattruong250695/golang-restapi/api/responses"
+	"github.com/vonhattruong250695/golang-restapi/api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 
