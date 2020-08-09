@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/vonhattruong250695/golang-restapi/models"
+	"github.com/vonhattruong250695/golang-restapi/api/models"
 	"log"
 	"net/http"
 
