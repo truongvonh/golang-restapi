@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/vonhattruong250695/golang-restapi/api/auth"
-	"github.com/vonhattruong250695/golang-restapi/api/responses"
+	"../auth"
+	"../responses"
 )
 
 func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {

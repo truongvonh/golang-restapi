@@ -1,6 +1,8 @@
 package controllers
 
-import "github.com/vonhattruong250695/golang-restapi/api/middlewares"
+import (
+	"../../middlewares"
+)
 
 func (s *Server) initializeRoutes() {
 
