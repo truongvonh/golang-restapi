@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"../../auth"
-	"../../models"
-	"../../responses"
-	"../../utils/formaterror"
+	"../../api/auth"
+	"../../api/models"
+	"../../api/responses"
+	"../../api/utils/formaterror"
 	"github.com/gorilla/mux"
 )
 

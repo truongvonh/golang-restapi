@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"../../auth"
-	"../../models"
-	"../../responses"
-	"../../utils/formaterror"
+	"../../api/auth"
+	"../../api/models"
+	"../../api/responses"
+	"../../api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 
