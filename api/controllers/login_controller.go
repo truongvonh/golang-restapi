@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/jinzhu/gorm"
 	"io/ioutil"
 	"net/http"
 
 	"../../api/auth"
+	message "../../api/constants"
 	"../../api/models"
 	"../../api/responses"
 	"../../api/utils/formaterror"
@@ -25,7 +27,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user.Prepare()
+	//user.Prepare()
 	err = user.Validate("login")
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -41,7 +43,6 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) SignIn(email, password string) (string, error) {
-
 	var err error
 
 	user := models.User{}
@@ -54,5 +55,43 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
-	return auth.CreateToken(user.ID), nil
+	token, _ := auth.CreateToken(user.ID)
+	return token, nil
+}
+
+func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
+
+	var u models.User
+
+	err := json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err = u.Validate("sign-up"); err != nil {
+		http.Error(w, message.InvalidParams, http.StatusBadRequest)
+		return
+	}
+
+	err = server.
+		DB.
+		Debug().
+		Model(models.User{}).Where("email = ?", u.Email).Find(&u).Error
+
+	if !gorm.IsRecordNotFoundError(err) {
+		http.Error(w, message.UserExist, http.StatusConflict)
+		return
+	}
+
+	u.Prepare()
+
+	if err = server.DB.Debug().Model(&models.User{}).Create(&u).Error; err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, u)
+	return
+
 }

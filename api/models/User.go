@@ -1,11 +1,13 @@
 package models
 
 import (
+	"crypto/rand"
 	"errors"
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"html"
+	"io"
 	"log"
 	"strings"
 	"time"
@@ -13,7 +15,7 @@ import (
 
 type User struct {
 	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	Nickname  string    `gorm:"size:255;not null;unique" json:"nickname"`
+	Nickname  string    `gorm:"size:255" json:"nickname"`
 	Email     string    `gorm:"size:100;not null;unique" json:"email"`
 	Password  string    `gorm:"size:100;not null;" json:"password"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
@@ -48,9 +50,6 @@ func (u *User) Prepare() {
 func (u *User) Validate(action string) error {
 	switch strings.ToLower(action) {
 	case "update":
-		if u.Nickname == "" {
-			return errors.New("Required Nickname")
-		}
 		if u.Password == "" {
 			return errors.New("Required Password")
 		}
@@ -75,9 +74,6 @@ func (u *User) Validate(action string) error {
 		return nil
 
 	default:
-		if u.Nickname == "" {
-			return errors.New("Required Nickname")
-		}
 		if u.Password == "" {
 			return errors.New("Required Password")
 		}
@@ -104,7 +100,12 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	var users []User
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	err = db.
+		Debug().
+		Model(&User{}).
+		Limit(100).
+		Find(&users).
+		Error
 	if err != nil {
 		return &[]User{}, err
 	}
@@ -113,7 +114,12 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	var err error
-	err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
+	err = db.
+		Debug().
+		Model(User{}).
+		Where("id = ?", uid).
+		Take(&u).
+		Error
 	if err != nil {
 		return &User{}, err
 	}
@@ -157,4 +163,18 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+func generateEmailToken() string {
+	const EmailTokenLength = 6
+	table := [...]byte{'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}
+	b := make([]byte, EmailTokenLength)
+	n, err := io.ReadAtLeast(rand.Reader, b, EmailTokenLength)
+	if n != EmailTokenLength {
+		panic(err)
+	}
+	for i := 0; i < len(b); i++ {
+		b[i] = table[int(b[i])%len(table)]
+	}
+	return string(b)
 }

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/vonhattruong250695/golang-restapi/api"
+import "./api"
 
 func main() {
 	api.Run()

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"../../api/models"
+	"../models"
 	"fmt"
 	"log"
 	"net/http"
