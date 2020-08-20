@@ -10,6 +10,7 @@ import (
 	message "../../api/constants"
 	"../../api/models"
 	"../../api/responses"
+	"../../api/services"
 	"../../api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -88,6 +89,17 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 
 	if err = server.DB.Debug().Model(&models.User{}).Create(&u).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	mailData := services.MailData{
+		UserName: u.Email,
+		UserMail: u.Email,
+		Content:  "test email",
+	}
+
+	if _, err = services.SendMail(mailData); err != nil {
+		http.Error(w, message.ValidationEmailFailed, http.StatusConflict)
 		return
 	}
 
