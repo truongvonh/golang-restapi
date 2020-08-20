@@ -5,12 +5,14 @@ import (
 	"github.com/jinzhu/gorm"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"../../api/auth"
 	message "../../api/constants"
 	"../../api/models"
 	"../../api/responses"
 	"../../api/services"
+	"../../api/utils"
 	"../../api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -78,7 +80,10 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 	err = server.
 		DB.
 		Debug().
-		Model(models.User{}).Where("email = ?", u.Email).Find(&u).Error
+		Model(models.User{}).
+		Where("email = ?", u.Email).
+		Find(&u).
+		Error
 
 	if !gorm.IsRecordNotFoundError(err) {
 		http.Error(w, message.UserExist, http.StatusConflict)
@@ -86,6 +91,7 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u.Prepare()
+	u.VerifyCode = models.GenerateEmailToken()
 
 	if err = server.DB.Debug().Model(&models.User{}).Create(&u).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -95,15 +101,56 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 	mailData := services.MailData{
 		UserName: u.Email,
 		UserMail: u.Email,
-		Content:  "test email",
+		Content: "This is your activation code <strong>" + u.VerifyCode +
+			"</strong>.It will be expired after 2 hours",
 	}
 
 	if _, err = services.SendMail(mailData); err != nil {
-		http.Error(w, message.ValidationEmailFailed, http.StatusConflict)
+		http.Error(w, message.ValidationEmailFailed, http.StatusBadRequest)
 		return
 	}
 
 	responses.JSON(w, http.StatusOK, u)
 	return
 
+}
+
+func (server *Server) VerifyAccount(w http.ResponseWriter, r *http.Request) {
+	user := models.User{}
+	body := utils.GetBodyFromRequest(w, r)
+
+	if err := json.Unmarshal(body, &user); err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	err := server.
+		DB.
+		Debug().
+		Model(models.User{}).
+		Where("verifyCode = ?", user.VerifyCode).
+		Error
+
+	if gorm.IsRecordNotFoundError(err) {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	now := time.Now()
+	updateTime := user.UpdatedAt
+
+	if updateTime.Sub(now).Hours() > 1 {
+		http.Error(w, message.ExpiredVerifyCode, http.StatusBadRequest)
+		return
+	}
+
+	user.VerifyCode = ""
+	user.IsActive = true
+	err = server.DB.Debug().Model(models.User{}).Save(&user).Error
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+	}
+
+	responses.JSON(w, http.StatusOK, message.VerifyAccountSuccess)
+	return
 }
