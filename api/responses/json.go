@@ -23,5 +23,13 @@ func ERROR(w http.ResponseWriter, statusCode int, err error) {
 		})
 		return
 	}
-	JSON(w, http.StatusBadRequest, nil)
+}
+
+func SUCCESS(w http.ResponseWriter, statusCode int, data interface{}) {
+	JSON(w, statusCode, struct {
+		Data interface{} `json:"data"`
+	}{
+		Data: data,
+	})
+	return
 }

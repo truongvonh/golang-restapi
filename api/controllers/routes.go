@@ -12,7 +12,7 @@ func (server *Server) initializeRoutes() {
 	// Login Route
 	server.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(server.Login)).Methods("POST")
 	server.Router.HandleFunc("/sign-up", middlewares.SetMiddlewareJSON(server.SignUp)).Methods("POST")
-	server.Router.HandleFunc("/verify-code", middlewares.SetMiddlewareJSON(server.Verify)).Methods("POST")
+	server.Router.HandleFunc("/verify-code", middlewares.SetMiddlewareJSON(server.VerifyAccount)).Methods("POST")
 
 	//Users routes
 	server.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(server.CreateUser)).Methods("POST")

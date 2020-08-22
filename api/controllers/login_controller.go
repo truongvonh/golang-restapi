@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/jinzhu/gorm"
 	"io/ioutil"
 	"net/http"
@@ -82,7 +83,7 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 		Debug().
 		Model(models.User{}).
 		Where("email = ?", u.Email).
-		Find(&u).
+		Take(&u).
 		Error
 
 	if !gorm.IsRecordNotFoundError(err) {
@@ -128,11 +129,12 @@ func (server *Server) VerifyAccount(w http.ResponseWriter, r *http.Request) {
 		DB.
 		Debug().
 		Model(models.User{}).
-		Where("verifyCode = ?", user.VerifyCode).
+		Where("verify_code = ?", user.VerifyCode).
+		Take(&user).
 		Error
 
 	if gorm.IsRecordNotFoundError(err) {
-		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusBadRequest, errors.New(message.VerifyCodeNotFound))
 		return
 	}
 
@@ -149,8 +151,9 @@ func (server *Server) VerifyAccount(w http.ResponseWriter, r *http.Request) {
 	err = server.DB.Debug().Model(models.User{}).Save(&user).Error
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
+		return
 	}
 
-	responses.JSON(w, http.StatusOK, message.VerifyAccountSuccess)
+	responses.SUCCESS(w, http.StatusOK, message.VerifyAccountSuccess)
 	return
 }

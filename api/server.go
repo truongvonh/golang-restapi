@@ -3,11 +3,11 @@ package api
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"os"
 
 	"./controllers"
 	"./seed"
 	"log"
-	"os"
 )
 
 var server = controllers.Server{}
@@ -28,9 +28,11 @@ func Run() {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_NAME"),
+		os.Getenv("DB_CONTAINER_NAME"),
 	)
 
 	seed.Load(server.DB)
+	println("Hello world")
 
 	server.Run(":8080")
 
