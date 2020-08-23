@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"../models"
 	"fmt"
+	"golang-restapi/api/models"
 	"log"
 	"net/http"
 

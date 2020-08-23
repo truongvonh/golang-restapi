@@ -8,13 +8,13 @@ import (
 	"net/http"
 	"time"
 
-	"../../api/auth"
-	message "../../api/constants"
-	"../../api/models"
-	"../../api/responses"
-	"../../api/services"
-	"../../api/utils"
-	"../../api/utils/formaterror"
+	"golang-restapi/api/auth"
+	message "golang-restapi/api/constants"
+	"golang-restapi/api/models"
+	"golang-restapi/api/responses"
+	"golang-restapi/api/services"
+	"golang-restapi/api/utils"
+	"golang-restapi/api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 

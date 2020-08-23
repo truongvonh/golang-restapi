@@ -2,9 +2,16 @@ FROM golang:1.14
 
 WORKDIR /app/golang-rest-api
 
+#RUN apk add --no-cache git
+
 ADD . .
 
-RUN go get -d -v ./...
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
+COPY . .
 
 RUN go build -o ./build/golang-rest-api .
 

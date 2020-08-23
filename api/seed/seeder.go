@@ -3,8 +3,8 @@ package seed
 import (
 	"log"
 
-	"../models"
 	"github.com/jinzhu/gorm"
+	"golang-restapi/api/models"
 )
 
 var users = []models.User{

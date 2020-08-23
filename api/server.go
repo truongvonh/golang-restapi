@@ -5,8 +5,8 @@ import (
 	"github.com/joho/godotenv"
 	"os"
 
-	"./controllers"
-	"./seed"
+	"golang-restapi/api/controllers"
+	"golang-restapi/api/seed"
 	"log"
 )
 

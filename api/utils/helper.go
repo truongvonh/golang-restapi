@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"../../api/responses"
+	"golang-restapi/api/responses"
 	"io/ioutil"
 	. "net/http"
 )

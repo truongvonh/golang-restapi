@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"../responses"
+	"golang-restapi/api/responses"
 	"net/http"
 )
 

@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"../../api/auth"
-	"../../api/models"
-	"../../api/responses"
-	"../../api/utils/formaterror"
 	"github.com/gorilla/mux"
+	"golang-restapi/api/auth"
+	"golang-restapi/api/models"
+	"golang-restapi/api/responses"
+	"golang-restapi/api/utils/formaterror"
 )
 
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {

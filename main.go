@@ -1,6 +1,6 @@
 package main
 
-import "./api"
+import "golang-restapi/api"
 
 func main() {
 	api.Run()

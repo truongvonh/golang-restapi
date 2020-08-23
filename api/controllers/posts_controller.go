@@ -1,18 +1,18 @@
 package controllers
 
 import (
-	"../auth"
-	"../models"
-	"../responses"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang-restapi/api/auth"
+	"golang-restapi/api/models"
+	"golang-restapi/api/responses"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 
-	"../../api/utils/formaterror"
 	"github.com/gorilla/mux"
+	"golang-restapi/api/utils/formaterror"
 )
 
 func (server *Server) CreatePost(w http.ResponseWriter, r *http.Request) {
