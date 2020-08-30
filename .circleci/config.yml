@@ -16,12 +16,11 @@ jobs:
       - setup_remote_docker
       - checkout
       - docker/check:
-        docker-username: DOCKER_LOGIN
-        docker-password: DOCKER_PASSWORD
+          docker-username: "truongvn"
+          docker-password: "123qwe123qwe@"
       - docker/build:
           image: $DOCKER_IMAGE
           tag: $DOCKER_TAG
-
       - docker/push:
           digest-path: /tmp/digest.txt
           image: $DOCKER_IMAGE
