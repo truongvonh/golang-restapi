@@ -10,7 +10,7 @@ jobs:
   build-and-push:
     environment:
       DOCKER_IMAGE: golang-restapi_app
-      DOCKER_TAG: 1.0
+      DOCKER_TAG: latest
     executor: docker/docker
     steps:
       - setup_remote_docker
