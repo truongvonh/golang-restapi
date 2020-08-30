@@ -17,6 +17,7 @@ services:
     build: .
     ports:
       - "8080:8080"
+    restart: "always"
     depends_on:
       - db
 #    network_mode: bridge
