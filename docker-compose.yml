@@ -10,14 +10,15 @@ services:
       DATABASE_HOST: ${DB_HOST}
     ports:
       - "5432:5432"
-  #    network_mode: bridge
-
+      -
   app:
     container_name: golang-app
+    env_file:
+      - .env
     build: .
     ports:
       - "8080:8080"
+    command: ["./scripts/wait-for-it.sh", "db:5432", "--", "./build/golang-rest-api"]
     restart: "always"
     depends_on:
       - db
-#    network_mode: bridge

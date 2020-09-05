@@ -17,4 +17,6 @@ RUN go build -o ./build/golang-rest-api .
 
 EXPOSE 8080
 
-CMD ["./build/golang-rest-api"]
+RUN ["chmod", "+x", "./scripts/wait-for-it.sh"]
+
+#CMD ["./build/golang-rest-api"]
