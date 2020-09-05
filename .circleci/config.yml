@@ -5,9 +5,10 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@1.4.0
+  dotenv: anilanar/dotenv@volatile
 
 jobs:
-  build-and-push:
+  build-and-publish-docker-image:
     environment:
       DOCKER_IMAGE: truongvn/golang-restapi_app
       DOCKER_TAG: latest
@@ -16,8 +17,8 @@ jobs:
       - setup_remote_docker
       - checkout
       - docker/check
-#          docker-username: DOCKER_LOGIN
-#          docker-password: DOCKER_PASSWORD
+      - dotenv/source:
+          path: .env
       - docker/build:
           image: $DOCKER_IMAGE
           tag: $DOCKER_TAG
@@ -29,12 +30,19 @@ jobs:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
 
+#  deploy:
+#    executor: docker/docker
+#    steps:
+#      - add_ssh_keys:
+#          fingerprints:
+#            - $SSH_KEY_FINGERPRINT
+#      - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER './scripts/deploy.sh'
 workflows:
   my-pipeline:
     jobs:
-      - build-and-push:
-#          requires:
-#            - golang-test before build in here
+      - build-and-publish-docker-image:
+          # requires:
+          # - golang-test before build in here
           filters:
             branches:
               only:
