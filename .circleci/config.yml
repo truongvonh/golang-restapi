@@ -7,7 +7,6 @@ orbs:
   docker: circleci/docker@1.4.0
   dotenv: anilanar/dotenv@volatile
 
-
 jobs:
   build-and-publish-docker-image:
     environment:
