@@ -10,7 +10,6 @@ services:
       DATABASE_HOST: ${DB_HOST}
     ports:
       - "5432:5432"
-      -
   app:
     container_name: golang-app
     env_file:
